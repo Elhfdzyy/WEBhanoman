@@ -290,12 +290,12 @@ Cafe Ndalem Hanoman adalah kafe tradisional dengan sentuhan modern yang menghadi
         </div>
 
         <!--Snack -->
-        <div class="col-lg-6 menu-item isotope-item filter-snack">
+        {{-- <div class="col-lg-6 menu-item isotope-item filter-snack">
           <img src="style/assets/img/menu/pisang.jpg" class="menu-img" alt="">
           <div class="menu-content">
             <a href="#">Pisang Goreng</a><span>20K</span>
           </div>
-        </div>
+        </div> --}}
 
         </div><!-- Menu Container -->
 

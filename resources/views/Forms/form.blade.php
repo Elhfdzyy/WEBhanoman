@@ -7,10 +7,17 @@
     @include('include.style1')
 </head>
 <body>
-    <form class=
-    "reservation-form">
+
+
+    <form class="reservation-form" action="{{ route('reservasi.submit') }}" method="POST">
+        @csrf
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         <h2>Book a Table</h2>
-        <div class="error-message">TypeError: Failed to fetch</div>
+        
         <div class="form-group">
             <label for="name">Full Name</label>
             <input type="text" id="name" name="name" placeholder="Enter your name" required>
@@ -53,5 +60,6 @@
         </div>
         <button type="submit">Book a Table</button>
     </form>
+    
 </body>
 </html>
