@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,13 +12,14 @@
     <div class="main">
         <input type="checkbox" id="chk" aria-hidden="true">
         <div class="signup">
-            <form>
+            <form action="{{ route('register.store') }}" method="POST">
+                @csrf
                 <label for="chk" aria-hidden="true">Sign up</label>
-                <input type="text" name="txt" placeholder="User name" required="">
-                <input type="email" name="email" placeholder="Email" required="">
-                <input type="number" name="broj" placeholder="BrojTelefona" required="">
+                <input type="text" name="name" id="username" placeholder="Username" required="">
+                <input type="email" name="email" id="email" placeholder="Email" required="">
+                <input type="number" name="hp" id="hp" placeholder="hp" required="">
                 <input type="password" name="pswd" placeholder="Password" required="">
-                <button>Sign up</button>
+                <button type="submit">Sign up</button>
                 
             </form>
         </div>

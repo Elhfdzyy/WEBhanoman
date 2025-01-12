@@ -1,3 +1,11 @@
+
+    @if (session('status'))
+        <div class="alert alert-success" role="alert">
+            {{ session('status') }}
+        </div>
+    @endif
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +18,7 @@
     <form class=
     "reservation-form">
         <h2>Book a Table</h2>
-        <div class="error-message">TypeError: Failed to fetch</div>
+
         <div class="form-group">
             <label for="name">Full Name</label>
             <input type="text" id="name" name="name" placeholder="Enter your name" required>
@@ -53,5 +61,8 @@
         </div>
         <button type="submit">Book a Table</button>
     </form>
+
+  
 </body>
+
 </html>
