@@ -2,17 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class Admin extends Model
+class Admin extends Authenticatable  
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
+
+    protected $table = 'admin'; 
+    protected $guard = 'admin';
 
     protected $fillable = [
         'name',
         'email',
         'password',
+        'roles',
     ];
 
     protected $hidden = [
@@ -20,4 +25,3 @@ class Admin extends Model
         'remember_token',
     ];
 }
-
