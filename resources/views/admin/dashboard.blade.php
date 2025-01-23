@@ -205,12 +205,9 @@
             background-color: #f8a400;
         }
     </style>
-
-
 </head>
 
 <body>
-
     <div class="sidebar">
         <h2 style="color: #fff; text-align: center;">Admin Dashboard</h2>
         <a href="#stocks">Stok Barang</a>
@@ -227,87 +224,8 @@
                     style="position: absolute; top: -8px; right: -8px; font-size: 12px;">{{ $newReservationsCount }}</span>
             </div>
         </div>
-        {{-- <div class="header">
-        <h1>Welcome to the Admin Dashboard</h1>
-    </div>
 
-    <div class="content-section" id="stocks">
-        <h2>Manage Stok Barang</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Item 1</td>
-                    <td>100</td>
-                    <td>$10.00</td>
-                    <td><button class="button">Edit</button> <button class="button">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Item 2</td>
-                    <td>50</td>
-                    <td>$5.00</td>
-                    <td><button class="button">Edit</button> <button class="button">Delete</button></td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="form-group">
-            <h3>Add New Item</h3>
-            <label for="item-name">Item Name</label>
-            <input type="text" id="item-name" placeholder="Enter item name">
-            <label for="item-quantity">Quantity</label>
-            <input type="number" id="item-quantity" placeholder="Enter quantity">
-            <label for="item-price">Price</label>
-            <input type="number" id="item-price" placeholder="Enter price">
-            <button type="submit" class="form-group button">Add Item</button>
-        </div>
-    </div>
-
-    <div class="content-section" id="menu">
-        <h2>Manage Stok Menu</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Menu Name</th>
-                    <th>Quantity Available</th>
-                    <th>Price</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Menu Item 1</td>
-                    <td>30</td>
-                    <td>$20.00</td>
-                    <td><button class="button">Edit</button> <button class="button">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Menu Item 2</td>
-                    <td>40</td>
-                    <td>$15.00</td>
-                    <td><button class="button">Edit</button> <button class="button">Delete</button></td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="form-group">
-            <h3>Add New Menu Item</h3>
-            <label for="menu-name">Menu Name</label>
-            <input type="text" id="menu-name" placeholder="Enter menu name">
-            <label for="menu-quantity">Quantity Available</label>
-            <input type="number" id="menu-quantity" placeholder="Enter quantity">
-            <label for="menu-price">Price</label>
-            <input type="number" id="menu-price" placeholder="Enter price">
-            <button type="submit" class="form-group button">Add Menu Item</button>
-        </div>
-    </div> --}}
-
-        <div class="content-section" id="reservations">
+        <di class="content-section" id="reservations">
             <h2>Manage Reservations</h2>
             <table class="table">
                 <thead>
@@ -337,99 +255,88 @@
                             <td>
                                 <button class="button"
                                     onclick="openModal(
-                            '{{ $reservation->id }}',
-                            '{{ $reservation->name }}',
-                            '{{ $reservation->email }}',
-                            '{{ $reservation->phone }}',
-                            '{{ $reservation->reservation_date }}',
-                            '{{ date('H:i', strtotime($reservation->reservation_time)) }}',
-                            '{{ $reservation->guests }}',
-                            '{{ $reservation->message }}'
-                        )">Edit</button>
-                                <button class="button">Delete</button>
+                                    '{{ $reservation->id }}',
+                                    '{{ $reservation->name }}',
+                                    '{{ $reservation->email }}',
+                                    '{{ $reservation->phone }}',
+                                    '{{ $reservation->reservation_date }}',
+                                    '{{ date('H:i', strtotime($reservation->reservation_time)) }}',
+                                    '{{ $reservation->guests }}',
+                                    '{{ $reservation->message }}'
+                                )" data-bs-toggle="modal" data-bs-target="#editModal" >Edit</button>
+                                <button class="button" onclick="handleDelete('{{ $reservation->id }}')">Delete</button>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-<!-- Modal Edit -->
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2 class="mb-4">Edit Reservation</h2>
-        <form id="updateForm" method="POST">
-            @csrf
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="reservation-id">Reservation ID</label>
-                        <input type="text" id="reservation-id" name="id" readonly class="form-control">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="reservation-name">Name</label>
-                        <input type="text" id="reservation-name" name="name" class="form-control" required maxlength="255">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="reservation-email">Email</label>
-                        <input type="email" id="reservation-email" name="email" class="form-control" required maxlength="255">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="reservation-phone">Phone</label>
-                        <input type="text" id="reservation-phone" name="phone" class="form-control" required maxlength="255">
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="reservation-date">Reservation Date</label>
-                        <input type="date" id="reservation-date" name="reservation_date" class="form-control" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="reservation-time">Reservation Time</label>
-                        <input type="time" id="reservation-time" name="reservation_time" class="form-control" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="reservation-guests">Number of Guests</label>
-                        <input type="number" id="reservation-guests" name="guests" class="form-control" required min="1">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="reservation-message">Message</label>
-                        <textarea id="reservation-message" name="message" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-3">
-                <button type="submit" class="btn btn-primary w-100">Save Changes</button>
-            </div>
-        </form>
-    </div>
-</div>
-            {{-- END MODAL EDIT --}}
 
-            {{-- <div class="form-group">
-            <h3>Edit Reservation</h3>
-            <label for="reservation-id">Reservation ID</label>
-            <input type="text" id="reservation-id" placeholder="Enter reservation ID">
-            <label for="reservation-name">Name</label>
-            <input type="text" id="reservation-name" placeholder="Enter customer name">
-            <label for="reservation-date">Reservation Date</label>
-            <input type="date" id="reservation-date">
-            <label for="reservation-time">Reservation Time</label>
-            <input type="time" id="reservation-time">
-            <label for="reservation-guests">Number of Guests</label>
-            <input type="number" id="reservation-guests">
-            <button type="submit" class="form-group button">Update Reservation</button>
-        </div> --}}
+            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Reservation</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="updateForm" method="POST">
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="reservation-id">Reservation ID</label>
+                                        <input type="text" id="reservation-id" name="id" readonly class="form-control">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="reservation-name">Name</label>
+                                        <input type="text" id="reservation-name" name="name" class="form-control" required maxlength="255">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="reservation-email">Email</label>
+                                        <input type="email" id="reservation-email" name="email" class="form-control" required maxlength="255">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="reservation-phone">Phone</label>
+                                        <input type="text" id="reservation-phone" name="phone" class="form-control" required maxlength="255">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="reservation-date">Reservation Date</label>
+                                        <input type="date" id="reservation-date" name="reservation_date" class="form-control" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="reservation-time">Reservation Time</label>
+                                        <input type="time" id="reservation-time" name="reservation_time" class="form-control" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="reservation-guests">Number of Guests</label>
+                                        <input type="number" id="reservation-guests" name="guests" class="form-control" required min="1">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="reservation-message">Message</label>
+                                        <textarea id="reservation-message" name="message" class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
         </div>
     </div>
-
-
 
     <div id="newReservationsModal" class="modal">
         <div class="modal-content">
@@ -455,14 +362,9 @@
                     @endif
         </div>
     </div>
-
-    
-
 </body>
 
 </html>
-
-
 <script>
     // Previous JavaScript code remains the same
 
@@ -498,62 +400,11 @@
         });
 }
 
-// Panggil fungsi updateNotificationCount secara berkala (misalnya setiap 5 detik)
 setInterval(updateNotificationCount, 5000);
 </script>
 
 <script>
-    // Get the modal
-    const modal = document.getElementById('editModal');
 
-    // Function to open modal
-    function openModal(id, name, email, phone, date, time, guests, message) {
-        modal.style.display = "block";
-        document.getElementById('reservation-id').value = id;
-        document.getElementById('reservation-name').value = name;
-        document.getElementById('reservation-email').value = email;
-        document.getElementById('reservation-phone').value = phone;
-        document.getElementById('reservation-date').value = date;
-        document.getElementById('reservation-time').value = time;
-        document.getElementById('reservation-guests').value = guests;
-        document.getElementById('reservation-message').value = message;
-    }
-
-    // Function to close modal
-    function closeModal() {
-        modal.style.display = "none";
-    }
-
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            closeModal();
-        }
-    }
-
-    const modal = document.getElementById('editModal');
-    const updateForm = document.getElementById('updateForm');
-
-    function openModal(id, name, email, phone, date, time, guests, message) {
-        modal.style.display = "block";
-        
-        // Set form action dengan route yang benar
-        updateForm.action = `/admin/dashboard/update/${id}`;
-        
-        // Set form values sesuai dengan struktur tabel
-        document.getElementById('reservation-id').value = id;
-        document.getElementById('reservation-name').value = name;
-        document.getElementById('reservation-email').value = email;
-        document.getElementById('reservation-phone').value = phone;
-        document.getElementById('reservation-date').value = date;
-        document.getElementById('reservation-time').value = time;
-        document.getElementById('reservation-guests').value = guests;
-        document.getElementById('reservation-message').value = message || '';
-    }
-
-    function closeModal() {
-        modal.style.display = "none";
-    }
 
     // Close modal when clicking outside
     window.onclick = function(event) {
@@ -570,6 +421,29 @@ setInterval(updateNotificationCount, 5000);
     @if(session('error'))
         alert("{{ session('error') }}");
     @endif
+
+    function handleDelete(reservationId) {
+    if (confirm("Are you sure you want to delete this reservation?")) {
+        // Send a DELETE request to the delete route
+        fetch(`/admin/dashboard/delete/${reservationId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response from the server (e.g., reload the page to reflect the deletion)
+            alert(data.message); // Assuming the server returns a message
+            window.location.reload(); // Reload the page to reflect the deletion
+        })
+        .catch(error => {
+            console.error(error);
+            alert("An error occurred while deleting the reservation.");
+        });
+    }
+}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">

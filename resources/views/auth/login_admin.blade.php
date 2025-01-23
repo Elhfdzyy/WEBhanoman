@@ -29,6 +29,8 @@
             
                 <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
                 <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+
             </form>                                       
         </div>
         
