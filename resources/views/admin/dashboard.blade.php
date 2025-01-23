@@ -7,6 +7,9 @@
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -216,6 +219,14 @@
     </div>
 
     <div class="main-content">
+        <div class="header d-flex justify-content-between align-items-center">
+            <h1>Welcome to the Admin Dashboard</h1>
+            <div class="notification-icon position-relative" onclick="openNewReservationsModal()">
+                <i class="fas fa-bell"></i>
+                <span class="badge bg-danger rounded-pill notification-count"
+                    style="position: absolute; top: -8px; right: -8px; font-size: 12px;">{{ $newReservationsCount }}</span>
+            </div>
+        </div>
         {{-- <div class="header">
         <h1>Welcome to the Admin Dashboard</h1>
     </div>
@@ -418,9 +429,78 @@
         </div>
     </div>
 
+
+
+    <div id="newReservationsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeNewReservationsModal()">&times;</span>
+            <div class="mb-6 notifications-header">
+                <h2>Notifications</h2>
+            </div>
+            <hr>
+            <br><br>
+            @if ($newReservations->count() > 0)
+            @foreach ($newReservations as $reservation)
+            <div class="notifications-content">
+                <div class="notification">
+                    <div class="notification-text">
+                        <p><strong>{{ $reservation->name }} dengan email {{ $reservation->email }}</strong> Telah melakukan Reservasi..</p>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+            @else
+                        <p>No new reservations.</p>
+                    @endif
+        </div>
+    </div>
+
+    
+
 </body>
 
 </html>
+
+
+<script>
+    // Previous JavaScript code remains the same
+
+    const newReservationsModal = document.getElementById('newReservationsModal');
+
+    function openNewReservationsModal() {
+        newReservationsModal.style.display = "block";
+    }
+
+    function closeNewReservationsModal() {
+    newReservationsModal.style.display = "none";
+
+    // Send an AJAX request to update the notification count
+    fetch('/admin/dashboard/get-notification-count') // Replace with your actual route
+        .then(response => response.json())
+        .then(data => {
+            // Update the notification count badge
+            document.querySelector('.notification-count').textContent = data.count;
+        });
+}
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target == newReservationsModal) {
+            closeNewReservationsModal();
+        }
+    }
+
+    function updateNotificationCount() {
+    fetch('/admin/dashboard/get-notification-count')
+        .then(response => response.json())
+        .then(data => {
+            document.querySelector('.notification-count').textContent = data.count;
+        });
+}
+
+// Panggil fungsi updateNotificationCount secara berkala (misalnya setiap 5 detik)
+setInterval(updateNotificationCount, 5000);
+</script>
 
 <script>
     // Get the modal
@@ -494,3 +574,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>

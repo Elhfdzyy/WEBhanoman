@@ -10,18 +10,37 @@ use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
-
 class AuthController extends Controller
 {
-
-    public function index()
+    public function userLoginView()
     {
-        return view('auth.login');
+        return view('auth.login_user');
     }
 
     public function adminLoginView()
     {
         return view('auth.login_admin');
+    }
+
+    public function adminRegisterView()
+    {
+        return view('auth.register_admin');
+    }
+
+    public function postUserLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
+
+        if (Auth::guard('web')->attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate();
+            return redirect()->route('forms.show')
+                ->with('success', 'Welcome back!');
+        }
+
+        return back()->with('error', 'Invalid credentials.');
     }
 
     public function postAdminLogin(Request $request)
@@ -31,96 +50,51 @@ class AuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        $credentials = $request->only('email', 'password');
-        
-        if (Auth::guard('admin')->attempt($credentials)) {
+        if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
-
             return redirect('/admin/dashboard')
-                ->withSuccess('Welcome back, Admin!');
+                ->with('success', 'Welcome back, Admin!');
         }
 
-        return back()
-            ->withError('Invalid admin credentials.')
-            ->withInput($request->except('password'));
+        return back()->with('error', 'Invalid admin credentials.');
     }
 
-    public function adminRegisterView()
+    public function userRegisterView()
     {
-        return view('auth.login_admin');
+        return view('auth.register_user');
     }
 
-    public function postLogin(Request $request)
+    public function postUserRegistration(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:6',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => [
+                'required',
+                'min:6',
+                'confirmed',
+                'regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/'
+            ],
         ]);
 
-        $credentials = $request->only('email', 'password');
-        $remember = $request->has('remember');
-        if (Auth::attempt($credentials, $remember)) {
-            $request->session()->regenerate();
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-            return redirect()
-                ->intended(route('forms.show'))
-                ->withSuccess('Welcome back!');
+            return redirect('/login-user')
+                ->with('success', 'Registration successful! Please login.');
+        } catch (\Exception $e) {
+            Log::error('User registration failed: ' . $e->getMessage(), [
+                'email' => $request->email,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return back()->with('error', 'Registration failed. Please try again.');
         }
-
-        return back()
-            ->withError('Invalid credentials, please try again.')
-            ->withInput($request->except('password'));
     }
-
-    public function postRegistration(Request $request)
-{
-    // Sederhanakan validasi password terlebih dahulu
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:users',
-        'password' => [
-            'required',
-            'min:6',
-            'confirmed'
-        ],
-    ]);
-
-    try {
-        // Tambahkan debug log
-        Log::info('Attempting user registration', ['email' => $request->email]);
-        
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        // Tambahkan debug log sukses
-        Log::info('User registered successfully', ['user_id' => $user->id]);
-
-        return redirect()
-            ->route('login')
-            ->withSuccess('Registration successful! Please log in.');
-            
-    } catch (\Exception $e) {
-        // Tambahkan detail error yang lebih spesifik
-        Log::error('Registration failed: ' . $e->getMessage(), [
-            'email' => $request->email,
-            'error_code' => $e->getCode(),
-            'trace' => $e->getTraceAsString()
-        ]);
-
-        // Berikan pesan error yang lebih spesifik
-        $errorMessage = 'Registration failed. ';
-        if ($e instanceof \Illuminate\Database\QueryException) {
-            $errorMessage .= 'Database error occurred. ';
-        }
-        
-        return back()
-            ->withError($errorMessage . 'Please try again.')
-            ->withInput($request->except('password'));
-    }
-}
 
     public function postAdminRegistration(Request $request)
     {
@@ -140,19 +114,18 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'roles' => 'admin', // Add this line to set the roles field
+                'roles' => 'admin',
             ]);
 
-            return redirect('/login-admin');
+            return redirect('/login-admin')
+                ->with('success', 'Admin registration successful! Please login.');
         } catch (\Exception $e) {
             Log::error('Admin registration failed: ' . $e->getMessage(), [
                 'email' => $request->email,
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return back()
-                ->withError('An error occurred during registration. Please try again.')
-                ->withInput($request->except('password'));
+            return back()->with('error', 'Registration failed. Please try again.');
         }
     }
 

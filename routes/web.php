@@ -22,18 +22,21 @@ Route::get('/admin/dashboard', [App\Http\Controllers\Dashboard\DashboardControll
 Route::post('/admin/logout', [AuthController::class, 'adminLogout'])->name('admin.logout');
 
 Route::post('/admin/dashboard/update/{id}', [DashboardController::class, 'update'])->name('admin.reservation.update');
+Route::delete('/admin/dashboard/delete/{id}', [DashboardController::class, 'destroy'])->name('admin.reservation.delete');
+Route::get('/admin/dashboard/search', [DashboardController::class, 'search'])->name('admin.reservation.search');
 
-//USER
-Route::get('login', [AuthController::class, 'index'])->name('login');
-Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post');
+Route::get('/admin/dashboard/get-notification-count', 'App\Http\Controllers\DashboardController@getNotificationCount');
 
-Route::get('register', function () {
-    return view('auth.register');
-})->name('register');
 
-Route::post('post-register', [AuthController::class, 'postRegistration'])->name('register.post'); 
 
-Route::get('dashboard', [FormsController::class, 'showForms'])->name('forms.show');
+// User Routes
+Route::get('login-user', [AuthController::class, 'userLoginView'])->name('user.login');
+Route::post('post-login-user', [AuthController::class, 'postUserLogin'])->name('user.login.post');
+Route::get('register-user', [AuthController::class, 'userRegisterView'])->name('user.register');
+Route::post('post-register-user', [AuthController::class, 'postUserRegistration'])->name('user.register.post');
+Route::post('/user/logout', [AuthController::class, 'userLogout'])->name('user.logout'); 
+
+Route::get('form-reservasi', [FormsController::class, 'showForms'])->name('forms.show');
 
 Route::get('/reservasi', [FormsController::class, 'showForms'])->name('reservasi.form');
 Route::post('/reservasi', [FormsController::class, 'submitForm'])->name('reservasi.submit');

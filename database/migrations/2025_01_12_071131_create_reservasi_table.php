@@ -22,6 +22,7 @@ class CreateReservasisTable extends Migration
             $table->dateTime('tanggal_reservasi');
             $table->text('catatan')->nullable();
             $table->timestamps();
+            $table->boolean('is_read')->default(false); 
         });
     }
 

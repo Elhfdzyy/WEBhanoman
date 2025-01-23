@@ -12,8 +12,11 @@ class DashboardController extends Controller
     public function index()
     {
         $reservations = Reservasi::orderBy('reservation_date', 'desc')->get();
-        return view('admin.dashboard', compact('reservations'));
+        $newReservationsCount = Reservasi::where('created_at', '>=', now()->subDays(7))->count();
+        $newReservations = Reservasi::where('created_at', '>=', now()->subDays(7))->get();
+        return view('admin.dashboard', compact('reservations', 'newReservationsCount', 'newReservations'));
     }
+
 
     public function update(Request $request, $id)
     {

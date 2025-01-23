@@ -526,7 +526,7 @@ Cafe Ndalem Hanoman adalah kafe tradisional dengan sentuhan modern yang menghadi
           <form action="/login" method="get" role="form" class="php-email-form">
               <div class="row gy-4">
                   <div class="text-center mt-3">
-                      <a href="/login" class="btn btn-primary">Book a Table</a>
+                      <a href="/login-user" class="btn btn-primary">Book a Table</a>
                   </div>
               </div>
           </form><!-- End Reservation Form -->
