@@ -132,7 +132,7 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
+            /* z-index: 1000; */
             left: 0;
             top: 0;
             width: 100%;
@@ -145,7 +145,7 @@
             margin: 5% auto;
             padding: 20px;
             border: 1px solid #ddd;
-            width: 70%;
+            width: 100%;
             max-width: 600px;
             border-radius: 8px;
             position: relative;
@@ -254,88 +254,92 @@
                             <td>{{ $reservation->message }}</td>
                             <td>
                                 <button class="button"
-                                    onclick="openModal(
-                                    '{{ $reservation->id }}',
-                                    '{{ $reservation->name }}',
-                                    '{{ $reservation->email }}',
-                                    '{{ $reservation->phone }}',
-                                    '{{ $reservation->reservation_date }}',
-                                    '{{ date('H:i', strtotime($reservation->reservation_time)) }}',
-                                    '{{ $reservation->guests }}',
-                                    '{{ $reservation->message }}'
-                                )" data-bs-toggle="modal" data-bs-target="#editModal" >Edit</button>
+                                    data-bs-toggle="modal" data-bs-target="#editModal{{ $reservation->id }}">Edit</button>
                                 <button class="button" onclick="handleDelete('{{ $reservation->id }}')">Delete</button>
                             </td>
                         </tr>
+                        <div class="modal fade" id="editModal{{ $reservation->id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Reservation</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="updateForm" action="{{ route('admin.reservations.update', $reservation->id) }}" method="POST">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="reservation-id">Reservation ID</label>
+                                            <input type="text" id="reservation-id" value="{{ $reservation->id }}" name="id" readonly
+                                                class="form-control">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="reservation-name">Name</label>
+                                            <input type="text" id="reservation-name" name="name"
+                                                class="form-control" value="{{ $reservation->name }}" required maxlength="255">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="reservation-email">Email</label>
+                                            <input type="email" id="reservation-email" name="email"
+                                                class="form-control" value="{{ $reservation->email }}" required maxlength="255">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="reservation-phone">Phone</label>
+                                            <input type="text" id="reservation-phone" name="phone"
+                                                class="form-control" value="{{ $reservation->phone }}" required maxlength="255">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="reservation-date">Reservation Date</label>
+                                            <input type="date" id="reservation-date" name="reservation_date"
+                                                class="form-control" value="{{ $reservation->reservation_date }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="reservation-time">Reservation Time</label>
+                                            <input type="time" id="reservation-time" name="reservation_time" value="{{ $reservation->reservation_time }}"
+                                                class="form-control" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="reservation-guests">Number of Guests</label>
+                                            <input type="number" id="reservation-guests"  value="{{ $reservation->guests }}" name="guests"
+                                                class="form-control" required min="1">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="reservation-message">Message</label>
+                                            <textarea id="reservation-message" name="message" class="form-control" rows="3">{{ $reservation->message }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                    <button type="button" class="btn btn-success" onclick="approveReservation({{ $reservation->id }})">Approve</button>
+
+                                </div>
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
                     @endforeach
                 </tbody>
             </table>
 
-            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Reservation</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="updateForm" method="POST">
-                            @csrf
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="reservation-id">Reservation ID</label>
-                                        <input type="text" id="reservation-id" name="id" readonly class="form-control">
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="reservation-name">Name</label>
-                                        <input type="text" id="reservation-name" name="name" class="form-control" required maxlength="255">
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="reservation-email">Email</label>
-                                        <input type="email" id="reservation-email" name="email" class="form-control" required maxlength="255">
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="reservation-phone">Phone</label>
-                                        <input type="text" id="reservation-phone" name="phone" class="form-control" required maxlength="255">
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="reservation-date">Reservation Date</label>
-                                        <input type="date" id="reservation-date" name="reservation_date" class="form-control" required>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="reservation-time">Reservation Time</label>
-                                        <input type="time" id="reservation-time" name="reservation_time" class="form-control" required>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="reservation-guests">Number of Guests</label>
-                                        <input type="number" id="reservation-guests" name="guests" class="form-control" required min="1">
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="reservation-message">Message</label>
-                                        <textarea id="reservation-message" name="message" class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-        </div>
+            
+    </div>
     </div>
 
     <div id="newReservationsModal" class="modal">
@@ -347,19 +351,20 @@
             <hr>
             <br><br>
             @if ($newReservations->count() > 0)
-            @foreach ($newReservations as $reservation)
-            <div class="notifications-content">
-                <div class="notification">
-                    <div class="notification-text">
-                        <p><strong>{{ $reservation->name }} dengan email {{ $reservation->email }}</strong> Telah melakukan Reservasi..</p>
-                        <hr>
+                @foreach ($newReservations as $reservation)
+                    <div class="notifications-content">
+                        <div class="notification">
+                            <div class="notification-text">
+                                <p><strong>{{ $reservation->name }} dengan email {{ $reservation->email }}</strong>
+                                    Telah melakukan Reservasi..</p>
+                                <hr>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            @endforeach
+                @endforeach
             @else
-                        <p>No new reservations.</p>
-                    @endif
+                <p>No new reservations.</p>
+            @endif
         </div>
     </div>
 </body>
@@ -375,16 +380,16 @@
     }
 
     function closeNewReservationsModal() {
-    newReservationsModal.style.display = "none";
+        newReservationsModal.style.display = "none";
 
-    // Send an AJAX request to update the notification count
-    fetch('/admin/dashboard/get-notification-count') // Replace with your actual route
-        .then(response => response.json())
-        .then(data => {
-            // Update the notification count badge
-            document.querySelector('.notification-count').textContent = data.count;
-        });
-}
+        // Send an AJAX request to update the notification count
+        fetch('/admin/dashboard/get-notification-count') // Replace with your actual route
+            .then(response => response.json())
+            .then(data => {
+                // Update the notification count badge
+                document.querySelector('.notification-count').textContent = data.count;
+            });
+    }
     // Close modal when clicking outside
     window.onclick = function(event) {
         if (event.target == newReservationsModal) {
@@ -393,19 +398,17 @@
     }
 
     function updateNotificationCount() {
-    fetch('/admin/dashboard/get-notification-count')
-        .then(response => response.json())
-        .then(data => {
-            document.querySelector('.notification-count').textContent = data.count;
-        });
-}
+        fetch('/admin/dashboard/get-notification-count')
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector('.notification-count').textContent = data.count;
+            });
+    }
 
-setInterval(updateNotificationCount, 5000);
+    setInterval(updateNotificationCount, 5000);
 </script>
 
 <script>
-
-
     // Close modal when clicking outside
     window.onclick = function(event) {
         if (event.target == modal) {
@@ -414,40 +417,59 @@ setInterval(updateNotificationCount, 5000);
     }
 
     // Handling success/error messages
-    @if(session('success'))
+    @if (session('success'))
         alert("{{ session('success') }}");
     @endif
 
-    @if(session('error'))
+    @if (session('error'))
         alert("{{ session('error') }}");
     @endif
 
     function handleDelete(reservationId) {
-    if (confirm("Are you sure you want to delete this reservation?")) {
-        // Send a DELETE request to the delete route
-        fetch(`/admin/dashboard/delete/${reservationId}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Handle the response from the server (e.g., reload the page to reflect the deletion)
-            alert(data.message); // Assuming the server returns a message
-            window.location.reload(); // Reload the page to reflect the deletion
-        })
-        .catch(error => {
-            console.error(error);
-            alert("An error occurred while deleting the reservation.");
-        });
+        if (confirm("Are you sure you want to delete this reservation?")) {
+            // Send a DELETE request to the delete route
+            fetch(`/admin/dashboard/delete/${reservationId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response from the server (e.g., reload the page to reflect the deletion)
+                    alert(data.message); // Assuming the server returns a message
+                    window.location.reload(); // Reload the page to reflect the deletion
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("An error occurred while deleting the reservation.");
+                });
+        }
     }
+
+    function approveReservation(reservationId) {
+    fetch(`/admin/dashboard/approve/${reservationId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message); // Assuming the server returns a message
+        window.location.reload(); // Reload the page to reflect the approval
+    })
+    .catch(error => {
+        console.error(error);
+        alert("An error occurred while approving the reservation.");
+    });
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+</script>

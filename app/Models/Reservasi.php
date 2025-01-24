@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class Reservasi extends Model
 {
     protected $table = 'reservasi'; // Menentukan nama tabel
@@ -15,6 +16,7 @@ class Reservasi extends Model
         'reservation_date',
         'reservation_time',
         'guests',
+        'paket',
         'message'
     ];
 

@@ -15,6 +15,7 @@ class ReservasiModel extends Model
         'reservation_date',
         'reservation_time',
         'guests',
+        'paket',
         'message',
     ];
 }

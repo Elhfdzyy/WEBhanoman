@@ -21,7 +21,8 @@ Route::post('post-register-admin', [AuthController::class, 'postAdminRegistratio
 Route::get('/admin/dashboard', [App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('admin.dashboard');
 Route::post('/admin/logout', [AuthController::class, 'adminLogout'])->name('admin.logout');
 
-Route::post('/admin/dashboard/update/{id}', [DashboardController::class, 'update'])->name('admin.reservation.update');
+Route::post('/admin/dashboard/update/{id}', [DashboardController::class, 'update'])->name('admin.reservations.update');
+
 Route::delete('/admin/dashboard/delete/{id}', [DashboardController::class, 'destroy'])->name('admin.reservation.delete');
 Route::get('/admin/dashboard/search', [DashboardController::class, 'search'])->name('admin.reservation.search');
 

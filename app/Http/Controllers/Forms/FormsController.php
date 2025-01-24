@@ -18,6 +18,7 @@ class FormsController extends Controller
 
     public function submitForm(Request $request)
     {
+        
         // Validasi data form
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -25,9 +26,12 @@ class FormsController extends Controller
             'phone' => 'required|string|max:15',
             'date' => 'required|date',
             'time' => 'required|date_format:H:i',
+            'paket' => 'required|string|max:50', // Validasi paket
             'guests' => 'required|integer|min:1|max:10',
             'message' => 'nullable|string|max:500',
         ]);
+        
+        $formattedTime = date('H:i', strtotime($validated['time']));
 
         // Simpan data ke tabel reservasi
         ReservasiModel::create([
@@ -35,7 +39,8 @@ class FormsController extends Controller
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'reservation_date' => $validated['date'],
-            'reservation_time' => $validated['time'],
+            'reservation_time' => $formattedTime,
+            'paket' => $validated['paket'],
             'guests' => $validated['guests'],
             'message' => $validated['message'],
         ]);

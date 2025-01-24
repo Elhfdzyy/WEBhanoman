@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Reservasi;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReservationApproved;
+
 
 class DashboardController extends Controller
 {
@@ -54,4 +57,51 @@ class DashboardController extends Controller
                            ->with('error', 'Failed to update reservation. Please try again.');
         }
     }
+    public function destroy($id)
+    {
+        try {
+            $reservation = Reservasi::findOrFail($id);
+            $reservation->delete();
+
+            return response()->json([
+                'message' => 'Reservation deleted successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete reservation'
+            ], 500); 
+        }
+    }
+
+    public function approve(Request $request, $id)
+    {
+        try {
+            $reservation = Reservasi::findOrFail($id);
+            
+            // Update the reservation status to "Approved"
+            $reservation->status = 'Approved';
+            $reservation->save();
+            
+            // Send an email notification to the customer
+            $this->sendApprovalEmail($reservation);
+            
+            return response()->json([
+                'message' => 'Reservation approved and notification sent to the customer.'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Reservation approval failed: ' . $e->getMessage());
+            
+            return response()->json([
+                'message' => 'Failed to approve the reservation. Please try again.'
+            ], 500);
+        }
+    }
+
+    private function sendApprovalEmail($reservation)
+    {
+        Mail::to($reservation->email)->send(new ReservationApproved($reservation));
+    }
+
 }

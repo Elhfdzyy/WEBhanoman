@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReservasisTable extends Migration
+class CreateReservasiTable extends Migration
 {
     /**
      * Jalankan migrasi.
@@ -15,14 +15,15 @@ class CreateReservasisTable extends Migration
     {
         Schema::create('reservasi', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('name');
             $table->string('email');
-            $table->string('nomor_telepon', 15);
-            $table->integer('jumlah_orang');
-            $table->dateTime('tanggal_reservasi');
-            $table->text('catatan')->nullable();
+            $table->string('phone', 15);
+            $table->date('reservation_date');
+            $table->time('reservation_time');
+            $table->string('guests');
+            $table->string('paket')->nullable();
+            $table->text('message')->nullable();
             $table->timestamps();
-            $table->boolean('is_read')->default(false); 
         });
     }
 
